@@ -102,5 +102,3 @@
 - [Tomorrow.io](https://www.tomorrow.io/weather-api/)
 - [Open Meteo](https://open-meteo.com)
 - etc.
-
-
