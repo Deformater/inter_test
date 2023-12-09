@@ -1,5 +1,12 @@
 import datetime
+from enum import Enum
 from pydantic import BaseModel
+
+
+class WeatherServicesEnum(Enum):
+    TOMORROW_IO = "TOMORROW_IO"
+    WEATHERBIT = "WEATHERBIT"
+    OPENWEATHER = "OPENWEATHER"
 
 
 class InNow(BaseModel):
@@ -8,9 +15,9 @@ class InNow(BaseModel):
     when: datetime.datetime
 
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
-                "contry": "Russia",
+                "country": "Russia",
                 "city": "Moscow",
                 "when": "2023-12-05T23:55:19.947Z",
             }
@@ -18,8 +25,10 @@ class InNow(BaseModel):
 
 
 class OutNow(BaseModel):
-    temp_celsium: str
+    temp_celsium: float
     is_precipitation: bool
 
     class Config:
-        schema_extra = {"example": {"temp_celsium": "10", "is_precipitation": True}}
+        json_schema_extra = {
+            "example": {"temp_celsium": "10", "is_precipitation": True}
+        }
