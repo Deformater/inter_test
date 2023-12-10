@@ -19,8 +19,8 @@ class ServiceUnavailable(Exception):
 
 class AllServicesUnavailable(Exception):
     def __init__(self, services_names: list[str], *args: object) -> None:
-        self.service_name = services_names
+        self.services_names = services_names
         super().__init__(args)
 
     def __str__(self) -> str:
-        return f"All services unavailable  {self.services_names}"
+        return f"All services unavailable {self.services_names}"

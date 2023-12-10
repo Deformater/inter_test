@@ -30,23 +30,25 @@ class WeatherAPIService:
                 raise ValueError(
                     "You can get only current weather or forecast for 5 days after current date"
                 )
+
             date_delta = self.date - cur_time
-            print(date_delta.days)
             if date_delta.days > self.FORECAST_MAX_DAYS:
                 raise ValueError(
                     "You can get forecast only for 5 days from current date"
                 )
 
-    def get_weather_forecast(self):
+    def get_weather_forecast(self) -> OutSchema:
         for service in WeatherServicesEnum:
             try:
                 return self.__get_forecast_weather_from_service(service)
-            except ServiceUnavailable:
+            except (ServiceUnavailable, KeyError):
                 continue
         else:
             raise AllServicesUnavailable(self.API_KEYS.values())
 
-    def __get_forecast_weather_from_service(self, service: WeatherServicesEnum):
+    def __get_forecast_weather_from_service(
+        self, service: WeatherServicesEnum
+    ) -> OutSchema:
         api_key = self.API_KEYS[service]
         base_url = self.BASE_URLS[service]
 
@@ -76,13 +78,12 @@ class WeatherAPIService:
 
             case WeatherServicesEnum.WEATHERBIT:
                 params = {
-                    "appid": api_key,
+                    "key": api_key,
                     "lat": self.cords[0],
                     "lon": self.cords[1],
-                    "days": 5,
+                    "days": self.FORECAST_MAX_DAYS + 1,
                 }
                 response = requests.get(f"{base_url}forecast/daily/", params=params)
-                print(response.json())
 
                 if response.status_code != 200:
                     raise ServiceUnavailable(base_url)
@@ -97,20 +98,22 @@ class WeatherAPIService:
                         break
             case _:
                 raise ValueError(f"Unknown service: {service}")
+
         return OutSchema(temp_celsium=temperature, is_precipitation=is_precipitation)
 
-    def get_weather_now(self):
+    def get_weather_now(self) -> OutSchema:
         for service in WeatherServicesEnum:
             try:
                 return self.__get_now_weather_from_service(service)
-            except ServiceUnavailable:
+            except (ServiceUnavailable, KeyError):
                 continue
         else:
             raise AllServicesUnavailable(self.API_KEYS.values())
 
-    def __get_now_weather_from_service(self, service: WeatherServicesEnum):
+    def __get_now_weather_from_service(self, service: WeatherServicesEnum) -> OutSchema:
         api_key = self.API_KEYS[service]
         base_url = self.BASE_URLS[service]
+        temperature = is_precipitation = 0
 
         match service:
             case WeatherServicesEnum.TOMORROW_IO:
@@ -130,21 +133,17 @@ class WeatherAPIService:
 
             case WeatherServicesEnum.WEATHERBIT:
                 params = {
-                    "appid": api_key,
+                    "key": api_key,
                     "lat": self.cords[0],
                     "lon": self.cords[1],
-                    "days": 5,
                 }
                 response = requests.get(f"{base_url}current/", params=params)
-
                 if response.status_code != 200:
                     raise ServiceUnavailable(base_url)
 
                 data = response.json()["data"][0]
                 temperature = data["temp"]
                 is_precipitation = data["precip"] > 0
-            case WeatherServicesEnum.OPENWEATHER:
-                pass
             case _:
                 raise ValueError(f"Unknown service: {service}")
         return OutSchema(temp_celsium=temperature, is_precipitation=is_precipitation)
