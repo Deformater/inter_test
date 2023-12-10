@@ -14,7 +14,7 @@ class ServiceUnavailable(Exception):
         super().__init__(args)
 
     def __str__(self) -> str:
-        return f"Service unavailable  {self.service_name}"
+        return f"Service unavailable {self.service_name}"
 
 
 class AllServicesUnavailable(Exception):

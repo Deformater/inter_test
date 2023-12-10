@@ -6,10 +6,22 @@ from pydantic import BaseModel
 class WeatherServicesEnum(Enum):
     TOMORROW_IO = "TOMORROW_IO"
     WEATHERBIT = "WEATHERBIT"
-    OPENWEATHER = "OPENWEATHER"
 
 
-class InNow(BaseModel):
+class NowInSchema(BaseModel):
+    country: str
+    city: str
+
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "country": "Russia",
+                "city": "Moscow",
+            }
+        }
+
+
+class ForecastInSchema(BaseModel):
     country: str
     city: str
     when: datetime.datetime
@@ -24,7 +36,7 @@ class InNow(BaseModel):
         }
 
 
-class OutNow(BaseModel):
+class OutSchema(BaseModel):
     temp_celsium: float
     is_precipitation: bool
 
