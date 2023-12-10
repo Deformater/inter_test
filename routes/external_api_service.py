@@ -22,17 +22,20 @@ class WeatherAPIService:
 
     def __init__(self, cords: list[float], when: datetime.datetime = None):
         self.cords = cords
-        self.date = when.date()
+        if when is not None:
+            self.date = when.date()
 
-        cur_time = datetime.datetime.now().replace(tzinfo=None).date()
-        if self.date < cur_time:
-            raise ValueError(
-                "You can get only current weather or forecast for 5 days after current date"
-            )
-        date_delta = self.date - cur_time
-        print(date_delta.days)
-        if date_delta.days > self.FORECAST_MAX_DAYS:
-            raise ValueError("You can get forecast only for 5 days from current date")
+            cur_time = datetime.datetime.now().replace(tzinfo=None).date()
+            if self.date < cur_time:
+                raise ValueError(
+                    "You can get only current weather or forecast for 5 days after current date"
+                )
+            date_delta = self.date - cur_time
+            print(date_delta.days)
+            if date_delta.days > self.FORECAST_MAX_DAYS:
+                raise ValueError(
+                    "You can get forecast only for 5 days from current date"
+                )
 
     def get_weather_forecast(self):
         for service in WeatherServicesEnum:
