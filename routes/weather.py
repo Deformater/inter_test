@@ -13,6 +13,9 @@ weather_router = APIRouter()
 
 @weather_router.post("/now/", status_code=200, response_model=OutSchema)
 def post_now(body: NowInSchema):
+    """
+    Endpoint to get the current weather for a given city and country.
+    """
     try:
         cords = MapAPIService(body.city, body.country).get_cords()
         weather = WeatherAPIService(cords).get_weather_now()
@@ -27,6 +30,9 @@ def post_now(body: NowInSchema):
 
 @weather_router.post("/forecast/", status_code=200, response_model=OutSchema)
 def post_forecast(body: ForecastInSchema):
+    """
+    Endpoint to get up to 5 days weather forecast for a specific city and country.
+    """
     try:
         cords = MapAPIService(body.city, body.country).get_cords()
         weather = WeatherAPIService(cords, body.when).get_weather_forecast()
