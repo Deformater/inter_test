@@ -10,6 +10,3 @@ class Settings:
 
     WEATHERBIT_API_KEY = config("WEATHERBIT_API_KEY", cast=str)
     WEATHERBIT_API_BASE_URL = config("WEATHERBIT_API_BASE_URL", cast=str)
-
-    OPEN_WEATHER_API_BASE_URL = config("OPEN_WEATHER_API_BASE_URL", cast=str)
-    OPEN_WEATHER_API_KEY = config("OPEN_WEATHER_API_KEY", cast=str)
